@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// 1. Định nghĩa schema con (embedded) cho context
-// Chúng ta không cần tạo file riêng cho nó.
+
 const todoContextSchema = new Schema({
     snippet: {
         type: String,
@@ -10,7 +9,6 @@ const todoContextSchema = new Schema({
     }
 }, { _id: false }); // _id: false vì đây là sub-document, không cần ID riêng
 
-// 2. Định nghĩa schema chính
 const todoSchema = new Schema({
     project_id: {
         type: Schema.Types.ObjectId,
@@ -52,7 +50,6 @@ const todoSchema = new Schema({
         default: null
     },
 
-    // Gộp (embed) context vào đây
     context: todoContextSchema,
 
     first_seen_at: {

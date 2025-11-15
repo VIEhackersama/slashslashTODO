@@ -1,17 +1,10 @@
-require('dotenv').config(); 
-const mongoose = require('mongoose');
+require('dotenv').config();
+const connectDB = require('./config/dbconnect');
+const app = require('./app');
 
-require('./models/user.model');
-require('./models/project.model');
-require('./models/todo.model');
-require('./models/todohistory.model');
+connectDB();
 
-const MONGO_URI = process.env.MONGO_URI; 
-
-mongoose.connect(MONGO_URI)
-    .then(() => {
-        console.log('Kết nối MongoDB thành công!');
-    })
-    .catch(err => {
-        console.error('Lỗi kết nối MongoDB:', err);
-    });
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running: http://localhost:${PORT}`);
+});
