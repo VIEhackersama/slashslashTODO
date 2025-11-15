@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -26,25 +27,28 @@ const userSchema = new Schema({
     phone: {
         type: String,
         unique: true,
-        sparse: true, 
-        match: [/^\+?[0-9]{8,15}$/, 'Số điện thoại không hợp lệ'] 
+        sparse: true,
+        match: [/^\+?[0-9]{8,15}$/, 'Số điện thoại không hợp lệ']
     },
     profile_picture: {
         type: String,
-        default: null, 
+        default: null,
         trim: true
+    },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
     }
 }, {
     timestamps: true
 });
 
 userSchema.pre('save', async function (next) {
-    // Chỉ hash nếu password mới được sửa hoặc thêm
     if (!this.isModified('password_hash')) return next();
-
     try {
-        const salt = await bcrypt.genSalt(10); 
-        this.password_hash = await bcrypt.hash(this.password_hash, salt); // hash mật khẩu
+        const salt = await bcrypt.genSalt(10);
+        this.password_hash = await bcrypt.hash(this.password_hash, salt);
         next();
     } catch (err) {
         next(err);
@@ -53,7 +57,6 @@ userSchema.pre('save', async function (next) {
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password_hash);
-};//check mk
+};
 
-// Biên dịch Schema thành Model
 module.exports = mongoose.model('User', userSchema);
