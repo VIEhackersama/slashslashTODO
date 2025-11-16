@@ -3,13 +3,13 @@ const Schema = mongoose.Schema;
 
 const projectSchema = new Schema({
     owner_user_id: {
-        type: Schema.Types.ObjectId, // Kiểu dữ liệu tham chiếu
-        ref: 'User', // "Constraint" tham chiếu đến model 'User'
+        type: Schema.Types.ObjectId, 
+        ref: 'User', 
         required: true
     },
     name: {
         type: String,
-        required: [true, 'Tên dự án là bắt buộc'],
+        required: [true, 'Project name is needed'],
         trim: true
     },
     repository_url: {

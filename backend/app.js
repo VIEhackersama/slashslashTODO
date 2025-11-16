@@ -18,7 +18,7 @@ app.use(cors({
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
         } else {
-            return callback(new Error('Không được phép truy cập từ domain này!'));
+            return callback(new Error('Domain unauthorized!'));
         }
     },
     credentials: true, 
@@ -31,7 +31,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 
 app.use((req, res) => {
-    res.status(404).json({ status: 'error', message: 'Endpoint không tồn tại' });
+    res.status(404).json({ status: 'error', message: 'Endpoint not found' });
 });
 
 module.exports = app;

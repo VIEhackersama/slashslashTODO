@@ -7,8 +7,7 @@ const todoContextSchema = new Schema({
         type: String,
         required: true
     }
-}, { _id: false }); // _id: false vì đây là sub-document, không cần ID riêng
-
+}, { _id: false }); 
 const todoSchema = new Schema({
     project_id: {
         type: Schema.Types.ObjectId,
@@ -18,7 +17,7 @@ const todoSchema = new Schema({
     assigned_to_user_id: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        default: null // Cho phép null (chưa gán)
+        default: null 
     },
     file_path: {
         type: String,
@@ -27,7 +26,7 @@ const todoSchema = new Schema({
     line_number: {
         type: Number,
         required: true,
-        min: 1 // "Constraint" validation
+        min: 1 
     },
     content: {
         type: String,
@@ -36,7 +35,6 @@ const todoSchema = new Schema({
     status: {
         type: String,
         required: true,
-        // "Constraint" validation
         enum: ['open', 'resolved', 'ignored'],
         default: 'open'
     },
@@ -61,10 +59,9 @@ const todoSchema = new Schema({
         default: Date.now
     }
 }, {
-    timestamps: true // Dùng 'updatedAt' để biết khi nào nó được giải quyết
+    timestamps: true 
 });
 
-// Tạo index để tối ưu tìm kiếm theo dự án
 todoSchema.index({ project_id: 1, status: 1 });
 
 module.exports = mongoose.model('Todo', todoSchema);

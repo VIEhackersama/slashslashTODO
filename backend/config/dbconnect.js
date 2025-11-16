@@ -10,7 +10,7 @@ const connectDB = async () => {
         console.log('Connected to DB successfully');
     } catch (err) {
         console.error('Error occured:', err.message);
-        process.exit(1); // Dừng app nếu không kết nối được
+        process.exit(1);
     }
 };
 

@@ -6,7 +6,7 @@ module.exports = function (req, res, next) {
     const token = authHeader && authHeader.split(' ')[1]; 
 
     if (!token) {
-        return res.status(401).json({ status: 'error', message: 'Thiếu token xác thực' });
+        return res.status(401).json({ status: 'error', message: 'Authenticate token not found' });
     }
 
     try {
@@ -14,6 +14,6 @@ module.exports = function (req, res, next) {
         req.user = decoded; 
         next();
     } catch (err) {
-        return res.status(403).json({ status: 'error', message: 'Token không hợp lệ hoặc hết hạn' });
+        return res.status(403).json({ status: 'error', message: 'Invalid token' });
     }
 };
