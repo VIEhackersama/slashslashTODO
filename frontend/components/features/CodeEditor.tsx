@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,14 +22,16 @@ export function CodeEditor() {
   };
 
   return (
-    <Card className="p-4 shadow-md">
+    <Card className="p-4 shadow-md bg-white dark:bg-neutral-950 dark:border-gray-700 transition-colors">
       <CardContent>
         <div className="mb-4 flex justify-between items-center">
-          <h2 className="text-xl font-semibold">Paste code từ clipboard</h2>
-          <Button onClick={handlePaste}>Dán mã</Button>
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+            Paste code from clipboard
+          </h2>
+          <Button onClick={handlePaste}>Paste</Button>
         </div>
 
-        <ScrollArea className="h-96 border rounded-lg p-3 bg-black text-white">
+        <ScrollArea className="h-96 border rounded-lg p-3 bg-black text-white dark:bg-gray-950 dark:text-gray-100">
           <Editor
             value={code}
             onValueChange={setCode}
