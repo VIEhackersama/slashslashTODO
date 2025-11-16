@@ -5,20 +5,20 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     username: {
         type: String,
-        required: [true, 'Username là bắt buộc'],
+        required: [true, 'Username is required'],
         unique: true,
         trim: true
     },
     email: {
         type: String,
-        required: [true, 'Email là bắt buộc'],
+        required: [true, 'Email is required'],
         unique: true,
         lowercase: true,
         trim: true
     },
     password_hash: {
         type: String,
-        required: [true, 'Mật khẩu là bắt buộc']
+        required: [true, 'Password is required']
     },
     full_name: {
         type: String,
@@ -28,7 +28,7 @@ const userSchema = new Schema({
         type: String,
         unique: true,
         sparse: true,
-        match: [/^\+?[0-9]{8,15}$/, 'Số điện thoại không hợp lệ']
+        match: [/^\+?[0-9]{8,15}$/, 'Invalid number']
     },
     profile_picture: {
         type: String,

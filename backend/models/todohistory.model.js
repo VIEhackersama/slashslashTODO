@@ -10,22 +10,20 @@ const todoHistorySchema = new Schema({
     actor_user_id: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        default: null // Null có thể là 'hệ thống'
+        default: null 
     },
     action: {
         type: String,
         required: true,
-        // Ví dụ: 'created', 'status_changed', 'assigned', 'content_changed'
     },
     details: {
-        type: String, // Ví dụ: "Changed status from 'open' to 'resolved'"
+        type: String, 
         default: null
     }
 }, {
-    timestamps: { createdAt: 'timestamp', updatedAt: false } // Chỉ cần 'createdAt'
+    timestamps: { createdAt: 'timestamp', updatedAt: false } 
 });
 
-// Index để tra lịch sử của 1 todo
 todoHistorySchema.index({ todo_id: 1 });
 
 module.exports = mongoose.model('TodoHistory', todoHistorySchema);

@@ -5,7 +5,6 @@ const User = require('../models/user.model');
 const { validateRegister, validateLogin, validatePhoneLogin } = require('../validators/user.validator');
 const auth = require('../middlewares/auth.middleware');
 
-// Đăng ký tài khoản
 router.post('/register', validateRegister, async (req, res) => {
     try {
         const user = new User({
@@ -31,7 +30,6 @@ router.post('/register', validateRegister, async (req, res) => {
 });
 
 
-//  Đăng nhập bằng username hoặc email
 router.post('/login', validateLogin, async (req, res) => {
     try {
         const { identifier, password } = req.body;
@@ -42,11 +40,11 @@ router.post('/login', validateLogin, async (req, res) => {
         });
 
         if (!user)
-            return res.status(404).json({ status: 'error', message: 'Không tìm thấy tài khoản' });
+            return res.status(404).json({ status: 'error', message: 'Account unavailable' });
 
         const isMatch = await user.comparePassword(password);
         if (!isMatch)
-            return res.status(401).json({ status: 'error', message: 'Sai mật khẩu' });
+            return res.status(401).json({ status: 'error', message: 'Wrong password' });
 
         const token = jwt.sign(
             { id: user._id, username: user.username, email: user.email, role: user.role },
@@ -56,7 +54,7 @@ router.post('/login', validateLogin, async (req, res) => {
 
         res.status(200).json({
             status: 'success',
-            message: 'Đăng nhập thành công',
+            message: 'Logged in successfully',
             token,
             data: {
                 username: user.username,
@@ -71,21 +69,20 @@ router.post('/login', validateLogin, async (req, res) => {
 });
 
 
-// Đăng nhập bằng số điện thoại (endpoint riêng)
 router.post('/login/phone', validatePhoneLogin, async (req, res) => {
     try {
         const { phone, password } = req.body;
 
         if (!phone || !password)
-            return res.status(400).json({ status: 'error', message: 'Thiếu số điện thoại hoặc mật khẩu' });
+            return res.status(400).json({ status: 'error', message: 'Number phone not found' });
 
         const user = await User.findOne({ phone });
         if (!user)
-            return res.status(404).json({ status: 'error', message: 'Không tìm thấy tài khoản với số điện thoại này' });
+            return res.status(404).json({ status: 'error', message: 'Could not find account with this number' });
 
         const isMatch = await user.comparePassword(password);
         if (!isMatch)
-            return res.status(401).json({ status: 'error', message: 'Sai mật khẩu' });
+            return res.status(401).json({ status: 'error', message: 'Wrong password' });
 
         const token = jwt.sign(
             { id: user._id, username: user.username, phone: user.phone, role: user.role },
@@ -95,7 +92,7 @@ router.post('/login/phone', validatePhoneLogin, async (req, res) => {
 
         res.status(200).json({
             status: 'success',
-            message: 'Đăng nhập bằng số điện thoại thành công',
+            message: 'Logged in successfully',
             token,
             data: {
                 username: user.username,
@@ -114,7 +111,7 @@ router.get('/me', auth, async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password_hash');
         if (!user)
-            return res.status(404).json({ status: 'error', message: 'Không tìm thấy người dùng' });
+            return res.status(404).json({ status: 'error', message: 'User not found' });
 
         res.status(200).json({ status: 'success', data: user });
     } catch (err) {
@@ -134,7 +131,7 @@ router.put('/update', auth, async (req, res) => {
 
         res.status(200).json({
             status: 'success',
-            message: 'Cập nhật thông tin thành công',
+            message: 'Updated successfully',
             data: user
         });
     } catch (err) {
