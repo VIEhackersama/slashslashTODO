@@ -112,6 +112,10 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+.nav-item {
+  @apply text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white cursor-pointer transition-colors;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
