@@ -1,8 +1,5 @@
 const { body, validationResult } = require('express-validator');
 
-/**
- * Middleware xử lý lỗi validation
- */
 const handleValidation = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -14,51 +11,42 @@ const handleValidation = (req, res, next) => {
     next();
 };
 
-/**
- * ✅ Validate cho đăng ký tài khoản
- */
 const validateRegister = [
     body('username')
-        .notEmpty().withMessage('Username là bắt buộc')
-        .isLength({ min: 3 }).withMessage('Username phải có ít nhất 3 ký tự'),
+        .notEmpty().withMessage('Username is required')
+        .isLength({ min: 3 }).withMessage('Username must be at least 3 characters long'),
     body('email')
-        .notEmpty().withMessage('Email là bắt buộc')
-        .isEmail().withMessage('Email không hợp lệ'),
+        .notEmpty().withMessage('Email is required')
+        .isEmail().withMessage('Invalid email format'),
     body('password')
-        .notEmpty().withMessage('Mật khẩu là bắt buộc')
-        .isLength({ min: 6 }).withMessage('Mật khẩu phải có ít nhất 6 ký tự'),
+        .notEmpty().withMessage('Password is required')
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
     body('phone')
         .optional()
-        .matches(/^\+?[0-9]{8,15}$/).withMessage('Số điện thoại không hợp lệ'),
+        .matches(/^\+?[0-9]{8,15}$/).withMessage('Invalid phone number'),
     body('profile_picture')
         .optional()
-        .isURL().withMessage('Ảnh đại diện phải là URL hợp lệ'),
+        .isURL().withMessage('Profile picture must be a valid URL'),
 
     handleValidation
 ];
 
-/**
- * ✅ Validate cho đăng nhập (email hoặc username)
- */
 const validateLogin = [
     body('identifier')
-        .notEmpty().withMessage('Email hoặc username là bắt buộc')
-        .isString().withMessage('Trường identifier phải là chuỗi'),
+        .notEmpty().withMessage('Email or username is required')
+        .isString().withMessage('Identifier must be a string'),
     body('password')
-        .notEmpty().withMessage('Mật khẩu là bắt buộc'),
+        .notEmpty().withMessage('Password is required'),
 
     handleValidation
 ];
 
-/**
- * ✅ Validate cho đăng nhập bằng số điện thoại
- */
 const validatePhoneLogin = [
     body('phone')
-        .notEmpty().withMessage('Số điện thoại là bắt buộc')
-        .matches(/^\+?[0-9]{8,15}$/).withMessage('Số điện thoại không hợp lệ'),
+        .notEmpty().withMessage('Phone number is required')
+        .matches(/^\+?[0-9]{8,15}$/).withMessage('Invalid phone number'),
     body('password')
-        .notEmpty().withMessage('Mật khẩu là bắt buộc'),
+        .notEmpty().withMessage('Password is required'),
 
     handleValidation
 ];

@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./routes/user.route');
 const adminRoutes = require('./routes/admin.route');
-
+const projectRoutes = require('./routes/project.route');
+const todoRoutes = require('./routes/todo.route');
 const app = express();
 
 // URL LIST
@@ -29,7 +30,8 @@ app.use(express.json());
 
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
-
+app.use('/api/projects', projectRoutes);
+app.use('/api/projects/:projectId/todos', todoRoutes);
 app.use((req, res) => {
     res.status(404).json({ status: 'error', message: 'Endpoint not found' });
 });
