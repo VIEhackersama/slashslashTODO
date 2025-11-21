@@ -1,10 +1,14 @@
 "use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/useAuth";
 
 export function Navbar() {
+  const { user, isAuthenticated, logout } = useAuth();
+
   return (
     <nav
       className="
@@ -13,7 +17,6 @@ export function Navbar() {
         border-gray-200 dark:border-neutral-800 
       "
     >
-      {/* Centered container */}
       <div className="max-w-screen-xl mx-auto h-full px-6 flex items-center justify-between">
         {/* Left: Logo + Menu */}
         <div className="flex items-center gap-10">
@@ -24,18 +27,14 @@ export function Navbar() {
             //TODO
           </Link>
 
-          {/* Menu */}
           <div className="hidden md:flex items-center gap-7 text-sm font-medium">
             <span className="nav-item">Your works</span>
             <span className="nav-item">About Us</span>
             <span className="nav-item">Contact</span>
-            {/* <span className="nav-item">Blog</span>
-            <span className="nav-item">Templates</span>
-            <span className="nav-item">Enterprise</span> */}
           </div>
         </div>
 
-        {/* Right: Search + Buttons */}
+        {/* Right */}
         <div className="flex items-center gap-4">
           {/* Search */}
           <div className="relative hidden md:block">
@@ -55,16 +54,37 @@ export function Navbar() {
 
           <ThemeToggle />
 
-          <Button
-            variant="outline"
-            className="dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-800 px-4"
-          >
-            Login
-          </Button>
+          {/* If logged in */}
+          {isAuthenticated && user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-gray-700 dark:text-gray-200 text-sm font-medium">
+                Hello, <span className="font-semibold">{user.username}</span>
+              </span>
 
-          <Button className="dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200 px-4">
-            Register
-          </Button>
+              <Button
+                variant="outline"
+                onClick={logout}
+                className="dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-800 px-4"
+              >
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <>
+              {/* Login Button */}
+              <Button
+                variant="outline"
+                className="dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-800 px-4"
+              >
+                <Link href="/auth/login">Login</Link>
+              </Button>
+
+              {/* Register Button */}
+              <Button className="dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200 px-4">
+                <Link href="/auth/register">Register</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </nav>

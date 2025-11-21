@@ -11,11 +11,9 @@ export default function HomePage() {
     <div className="min-h-screen dark:bg-neutral-950 flex flex-col transition-colors">
       <Navbar />
 
-      {/* Title */}
       <div className="mt-12 flex flex-col items-center">
         <AnimatedTitle />
 
-        {/* Subtitle */}
         <motion.div
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
@@ -44,7 +42,6 @@ export default function HomePage() {
         </motion.div>
       </div>
 
-      {/* Editor */}
       <main className="flex-1 flex flex-col items-center justify-center p-6 pt-0">
         <AnimatedWrapper>
           <CodeEditor />
