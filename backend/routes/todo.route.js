@@ -4,10 +4,7 @@ const auth = require('../middlewares/auth.middleware');
 const { validateCreateTodo, validateUpdateTodo } = require('../validators/todo.validator');
 const todoService = require('../services/todo.service');
 
-// ---------------------------------------------
-// CREATE TODO for specific project
-// POST /api/projects/:projectId/todos
-// ---------------------------------------------
+
 router.post(
     '/',
     auth,
@@ -30,10 +27,7 @@ router.post(
     }
 );
 
-// ---------------------------------------------
-// GET ALL TODOS
-// GET /api/projects/:projectId/todos
-// ---------------------------------------------
+
 router.get(
     '/',
     auth,
@@ -52,10 +46,7 @@ router.get(
     }
 );
 
-// ---------------------------------------------
-// GET SPECIFIC TODO
-// GET /api/projects/:projectId/todos/:id
-// ---------------------------------------------
+
 router.get(
     '/:id',
     auth,
@@ -75,10 +66,7 @@ router.get(
     }
 );
 
-// ---------------------------------------------
-// UPDATE TODO
-// PUT /api/projects/:projectId/todos/:id
-// ---------------------------------------------
+
 router.put(
     '/:id',
     auth,
@@ -104,10 +92,7 @@ router.put(
     }
 );
 
-// ---------------------------------------------
-// DELETE TODO
-// DELETE /api/projects/:projectId/todos/:id
-// ---------------------------------------------
+
 router.delete(
     '/:id',
     auth,
