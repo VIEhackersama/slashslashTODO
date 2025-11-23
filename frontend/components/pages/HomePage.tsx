@@ -28,15 +28,25 @@ export default function HomePage() {
             codebase clean.
           </p>
 
-          <div>
+          <div className="flex flex-col items-center">
             <Button className="justify-conent-center m-4 p-5">
               Try now below
             </Button>
+
             <Button
               variant="outline"
               className="justify-conent-center m-4 p-5 dark:border-gray-500 dark:text-gray-200 dark:hover:bg-gray-800"
             >
               Continue your work
+            </Button>
+
+            {/* 🌟 NÚT CHATBOT THÊM VÀO ĐÂY */}
+            <Button
+              variant="default"
+              className="justify-conent-center m-4 p-5 bg-blue-600 text-white hover:bg-blue-700"
+              onClick={() => (window.location.href = "/chat")}
+            >
+              💬 Chat with bot
             </Button>
           </div>
         </motion.div>

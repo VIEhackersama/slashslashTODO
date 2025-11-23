@@ -4,12 +4,15 @@ const userRoutes = require('./routes/user.route');
 const adminRoutes = require('./routes/admin.route');
 const projectRoutes = require('./routes/project.route');
 const todoRoutes = require('./routes/todo.route');
+const chatRoutes = require('./routes/chat.route');
+
 const app = express();
 
-// URL LIST
+// URL LIST - THÊM http://localhost:3000
 const allowedOrigins = [
-    'http://localhost:5173', 
-    'http://localhost:3001', 
+    'http://localhost:5173',
+    'http://localhost:3001',
+    'http://localhost:3000',       // ✅ FIX QUAN TRỌNG
     'https://your-frontend-domain.com'
 ];
 
@@ -22,16 +25,22 @@ app.use(cors({
             return callback(new Error('Domain unauthorized!'));
         }
     },
-    credentials: true, 
+    credentials: true,
     optionsSuccessStatus: 200
 }));
 
 app.use(express.json());
 
+// ROUTES
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/projects/:projectId/todos', todoRoutes);
+
+// CHATBOT ROUTE
+app.use('/api/chat', chatRoutes);
+
+// 404
 app.use((req, res) => {
     res.status(404).json({ status: 'error', message: 'Endpoint not found' });
 });
