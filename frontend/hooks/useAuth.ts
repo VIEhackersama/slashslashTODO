@@ -99,9 +99,7 @@ export function useAuth() {
     }
   };
 
-  // -----------------------------
-  // On mount → load user automatically
-  // -----------------------------
+
   useEffect(() => {
     (async () => {
       await fetchMe();

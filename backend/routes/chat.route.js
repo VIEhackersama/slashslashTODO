@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
-
 router.post("/", async (req, res) => {
   const { message } = req.body;
 
