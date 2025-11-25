@@ -8,11 +8,12 @@ const chatRoutes = require('./routes/chat.route');
 
 const app = express();
 
-// URL LIST - THÊM http://localhost:3000
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:3001',
-    'http://localhost:3000',       // ✅ FIX QUAN TRỌNG
+    'http://localhost:3000',    
+    'http://172.20.10.3:3001',   
+    'http://172.20.10.3:5173',   
     'https://your-frontend-domain.com'
 ];
 

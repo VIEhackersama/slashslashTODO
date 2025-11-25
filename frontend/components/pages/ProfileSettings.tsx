@@ -30,7 +30,6 @@ const ProfileSettings = () => {
   }
   return (
     <div className="min-h-screen dark:bg-neutral-950 flex flex-col transition-colors">
-      <Navbar />
       <main className="flex-1 flex flex-col items-center justify-center p-4">
         <AnimatedWrapper>
           <Card className="w-full max-w-2xl border-border/50 shadow-xl overflow-hidden">
@@ -89,7 +88,6 @@ const ProfileSettings = () => {
           </Card>
         </AnimatedWrapper>
       </main>
-      <Footer />
     </div>
   );
 };

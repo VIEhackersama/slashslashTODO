@@ -1,4 +1,3 @@
-// layout.tsx
 "use client";
 import { Footer } from "@/components/common/Footer";
 import { Navbar } from "@/components/common/NavBar";
