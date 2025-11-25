@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Footer } from "@/components/common/Footer";
 
 interface UserData {
   _id: string;
@@ -56,7 +57,7 @@ const AdminDashboard = () => {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen dark:bg-neutral-950 flex items-center justify-center text-white transition-colors">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -64,11 +65,11 @@ const AdminDashboard = () => {
   if (!user || user.role !== "admin") {
     return (
       <div className="min-h-screen dark:bg-neutral-950 flex flex-col items-center justify-center text-white p-4 transition-colors">
-        <div className="bg-red-500/10 border border-red-500/50 rounded-2xl p-8 max-w-md text-center">
-          <h1 className="text-2xl font-bold text-red-400 mb-2">
+        <div className="bg-destructive/10 border border-destructive/50 rounded-2xl p-8 max-w-md text-center">
+          <h1 className="text-2xl font-bold text-destructive mb-2">
             Access Denied
           </h1>
-          <p className="text-gray-300">
+          <p className="text-muted-foreground">
             You do not have permission to view this page.
           </p>
         </div>
@@ -78,39 +79,42 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen dark:bg-neutral-950 flex flex-col transition-colors">
-      <main className="flex-1 p-8">
+      <Navbar />
+      <main className="flex-1 p-4 md:p-8">
         <AnimatedWrapper>
           <div className="max-w-6xl mx-auto space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
-                <h1 className="text-3xl font-bold bg-clip-text  bg-linear-to-r text-muted-foreground">
+                <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-primary to-secondary">
                   Admin Dashboard
                 </h1>
                 <p className="text-muted-foreground mt-1">
                   Manage users and view system stats
                 </p>
               </div>
-              <Card className="bg-card border-border">
+              <Card className="bg-card/50 border-border/50 backdrop-blur-sm">
                 <CardContent className="p-4 flex items-center gap-3">
-                  <span className="text-muted-foreground text-sm">
+                  <span className="text-muted-foreground text-sm font-medium">
                     Total Users:
                   </span>
-                  <span className="text-xl font-bold">{users.length}</span>
+                  <span className="text-xl font-bold text-primary">
+                    {users.length}
+                  </span>
                 </CardContent>
               </Card>
             </div>
 
             {error && (
-              <div className="p-4 bg-red-500/10 border border-red-500/50 rounded-xl text-red-400">
+              <div className="p-4 bg-destructive/10 border border-destructive/50 rounded-xl text-destructive">
                 {error}
               </div>
             )}
 
-            <Card className="overflow-hidden border-border bg-card">
+            <Card className="overflow-hidden border-border/50 bg-card/50 shadow-lg">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-muted/50 border-b border-border">
+                    <tr className="bg-muted/30 border-b border-border/50">
                       <th className="p-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                         User
                       </th>
@@ -125,40 +129,42 @@ const AdminDashboard = () => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border">
+                  <tbody className="divide-y divide-border/50">
                     {users.map((u) => (
                       <tr
                         key={u._id}
-                        className="hover:bg-muted/50 transition-colors group"
+                        className="hover:bg-muted/30 transition-colors group"
                       >
-                        <td className="p-4">
+                        <td className="p-3">
                           <div className="flex items-center">
-                            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold mr-3">
+                            <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold mr-3 shadow-sm">
                               {u.username.charAt(0).toUpperCase()}
                             </div>
                             <div>
-                              <div className="font-medium">{u.username}</div>
-                              <div className="text-sm text-muted-foreground">
+                              <div className="font-medium text-sm">
+                                {u.username}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
                                 {u.email}
                               </div>
                             </div>
                           </div>
                         </td>
-                        <td className="p-4">
+                        <td className="p-3">
                           <span
-                            className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ${
                               u.role === "admin"
-                                ? "bg-purple-500/10 text-purple-400 border-purple-500/20"
-                                : "bg-muted text-muted-foreground border-border"
+                                ? "bg-purple-500/10 text-purple-500 border-purple-500/20"
+                                : "bg-blue-500/10 text-blue-500 border-blue-500/20"
                             }`}
                           >
                             {u.role}
                           </span>
                         </td>
-                        <td className="p-4 text-muted-foreground text-sm">
+                        <td className="p-3 text-muted-foreground text-sm">
                           {new Date(u.createdAt).toLocaleDateString()}
                         </td>
-                        <td className="p-4 text-muted-foreground font-mono text-xs opacity-50">
+                        <td className="p-3 text-muted-foreground font-mono text-[10px] opacity-50">
                           {u._id}
                         </td>
                       </tr>
@@ -175,6 +181,7 @@ const AdminDashboard = () => {
           </div>
         </AnimatedWrapper>
       </main>
+      <Footer />
     </div>
   );
 };
