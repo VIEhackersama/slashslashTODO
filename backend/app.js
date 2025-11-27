@@ -13,7 +13,8 @@ const allowedOrigins = [
     'http://localhost:3001',
     'http://localhost:3000',    
     'http://172.20.10.3:3001',   
-    'http://172.20.10.3:5173',   
+    'http://172.20.10.3:5173',
+    'http://192.168.40.1:3001',   
     'https://your-frontend-domain.com'
 ];
 
