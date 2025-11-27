@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-
+import { v4 as uuidv4 } from "uuid";
 interface Message {
   role: "user" | "bot";
   text: string;
@@ -51,7 +51,7 @@ export default function ChatPage() {
   // Tạo cuộc trò chuyện mới
   const createConversation = () => {
     const newConv: Conversation = {
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       title: "Cuộc trò chuyện mới",
       messages: [],
     };
@@ -165,11 +165,12 @@ export default function ChatPage() {
 
   return (
     <div className="flex min-h-screen bg-neutral-950 text-white">
-
       {/* SIDEBAR */}
       <aside className="w-64 bg-neutral-900 border-r border-neutral-800 p-4 flex flex-col gap-4">
-
-        <Button onClick={createConversation} className="w-full bg-blue-600 hover:bg-blue-700">
+        <Button
+          onClick={createConversation}
+          className="w-full bg-blue-600 hover:bg-blue-700"
+        >
           + Cuộc trò chuyện mới
         </Button>
 
@@ -204,14 +205,17 @@ export default function ChatPage() {
 
       {/* MAIN CHAT AREA */}
       <main className="flex-1 flex flex-col items-center p-6">
-
         <h1 className="text-3xl font-bold mb-4">💬 Chat AI</h1>
 
         <div className="w-full max-w-3xl bg-neutral-900 border border-neutral-800 rounded-xl p-5 h-[550px] overflow-y-auto shadow-xl">
           {currentChat?.messages.map((m, i) => (
-            <div key={i} className={`flex mb-4 ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+            <div
+              key={i}
+              className={`flex mb-4 ${
+                m.role === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
               <div className="flex items-start gap-3 max-w-[80%]">
-                
                 {m.role === "bot" && (
                   <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shadow-lg">
                     🤖
@@ -227,7 +231,11 @@ export default function ChatPage() {
                 <div
                   className={`
                     p-3 rounded-2xl shadow-xl text-sm whitespace-pre-wrap leading-relaxed
-                    ${m.role === "user" ? "bg-blue-600 text-white rounded-tr-none" : "bg-neutral-800 text-blue-100 rounded-tl-none"}
+                    ${
+                      m.role === "user"
+                        ? "bg-blue-600 text-white rounded-tr-none"
+                        : "bg-neutral-800 text-blue-100 rounded-tl-none"
+                    }
                   `}
                 >
                   {m.text}
@@ -256,7 +264,10 @@ export default function ChatPage() {
             className="flex-1 p-3 rounded-lg bg-neutral-900 border border-neutral-700 text-white resize-none focus:border-blue-500 outline-none"
           />
 
-          <Button onClick={sendMessage} className="px-6 py-4 bg-blue-600 hover:bg-blue-700 rounded-lg">
+          <Button
+            onClick={sendMessage}
+            className="px-6 py-4 bg-blue-600 hover:bg-blue-700 rounded-lg"
+          >
             ➤
           </Button>
         </div>
