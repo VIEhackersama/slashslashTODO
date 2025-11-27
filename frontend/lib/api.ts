@@ -8,6 +8,18 @@ const api = axios.create({
   withCredentials: true, // allow refresh_token cookie
 });
 
+// Add interceptor to inject token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 // Add interceptor for auto refresh
 api.interceptors.response.use(
   (res) => res,
