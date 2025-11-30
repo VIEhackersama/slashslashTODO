@@ -17,7 +17,29 @@ interface ProjectCardProps {
   onEdit: (project: Project) => void;
 }
 
+import { useRouter } from "next/navigation";
+
+// ... inside component
+import { todoService } from "@/services/todo.service";
+import { useState, useEffect } from "react";
+
+// ... inside component
 export function ProjectCard({ project, onEdit }: ProjectCardProps) {
+  const router = useRouter();
+  const [todoCount, setTodoCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      try {
+        const todos = await todoService.getAll(project._id);
+        setTodoCount(todos.length);
+      } catch (error) {
+        console.error("Failed to fetch todo count", error);
+      }
+    };
+    fetchCount();
+  }, [project._id]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -25,10 +47,10 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
       whileHover={{ y: -5 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="h-full bg-white/5 backdrop-blur-md border-white/10 hover:border-primary/50 transition-colors overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <Card className="h-full bg-white/5 backdrop-blur-md border-white/10 hover:border-primary/50 transition-colors overflow-hidden group relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-        <CardHeader>
+        <CardHeader className="relative z-10">
           <CardTitle className="flex justify-between items-start gap-2">
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary truncate">
               {project.name}
@@ -44,7 +66,7 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 relative z-10">
           {project.repository_url && (
             <a
               href={project.repository_url}
@@ -64,17 +86,18 @@ export function ProjectCard({ project, onEdit }: ProjectCardProps) {
             </span>
           </div>
 
-          {/* Placeholder for TODO stats */}
           <div className="flex items-center gap-2 text-sm text-emerald-500">
             <CheckCircle2 className="h-4 w-4" />
-            <span>12 open tasks</span>
+            <span>
+              {todoCount !== null ? `${todoCount} open tasks` : "Loading..."}
+            </span>
           </div>
         </CardContent>
 
-        <CardFooter>
+        <CardFooter className="relative z-10">
           <Button
             className="w-full bg-gradient-to-r from-primary/80 to-secondary/80 hover:from-primary hover:to-secondary text-white shadow-lg shadow-primary/20"
-            onClick={() => {}} // TODO: Navigate to details
+            onClick={() => router.push(`/projects/${project._id}`)}
           >
             View Details
           </Button>
