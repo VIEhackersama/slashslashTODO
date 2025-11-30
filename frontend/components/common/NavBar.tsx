@@ -28,9 +28,20 @@ export function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center gap-7 text-sm font-medium">
-            <span className="nav-item">Your works</span>
-            <span className="nav-item">About Us</span>
-            <span className="nav-item">Contact</span>
+            <Link
+              href="/projects"
+              className="nav-item hover:text-primary transition-colors"
+            >
+              Projects
+            </Link>
+            <Link
+              href="/todos"
+              className="nav-item hover:text-primary transition-colors"
+            >
+              Todos
+            </Link>
+            <span className="nav-item cursor-pointer">About Us</span>
+            <span className="nav-item cursor-pointer">Contact</span>
           </div>
         </div>
 

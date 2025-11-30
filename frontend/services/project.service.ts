@@ -15,6 +15,11 @@ export const projectService = {
     return response.data.data;
   },
 
+  getById: async (id: string) => {
+    const response = await api.get(`/projects/${id}`);
+    return response.data.data;
+  },
+
   create: async (data: { name: string; repository_url?: string }) => {
     const response = await api.post("/projects", data);
     return response.data.data;
