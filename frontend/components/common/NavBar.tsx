@@ -40,8 +40,21 @@ export function Navbar() {
             >
               Todos
             </Link>
-            <span className="nav-item cursor-pointer">About Us</span>
-            <span className="nav-item cursor-pointer">Contact</span>
+            <Link
+              href="/about" 
+              className="nav-item hover:text-primary transition-colors text-gray-600 dark:text-gray-300 dark:hover:text-white"
+            >
+              About Us
+            </Link>
+
+            {/* Trỏ đến trang /contact */}
+            <Link
+              href="/contactus"
+              className="nav-item hover:text-primary transition-colors text-gray-600 dark:text-gray-300 dark:hover:text-white"
+            >
+              Contact
+            </Link>
+            
           </div>
         </div>
 
