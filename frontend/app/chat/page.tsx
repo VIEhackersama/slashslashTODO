@@ -14,6 +14,9 @@ interface Conversation {
   messages: Message[];
 }
 
+import { Navbar } from "@/components/common/NavBar";
+import { Footer } from "@/components/common/Footer";
+
 export default function ChatPage() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentId, setCurrentId] = useState<string | null>(null);
@@ -41,7 +44,10 @@ export default function ChatPage() {
 
   // Scroll cuối
   const scrollToBottom = () => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    chatEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
   };
 
   useEffect(() => {
@@ -164,114 +170,156 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-neutral-950 text-white">
-      {/* SIDEBAR */}
-      <aside className="w-64 bg-neutral-900 border-r border-neutral-800 p-4 flex flex-col gap-4">
-        <Button
-          onClick={createConversation}
-          className="w-full bg-blue-600 hover:bg-blue-700"
-        >
-          + Cuộc trò chuyện mới
-        </Button>
+    <div className="min-h-screen dark:bg-neutral-950 flex flex-col transition-colors relative">
+      {/* Background Blobs */}
+      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-secondary/20 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="flex flex-col gap-2 overflow-y-auto h-[80vh]">
-          {conversations.map((conv) => (
-            <div
-              key={conv.id}
-              onClick={() => setCurrentId(conv.id)}
-              className={`
-                p-3 rounded-lg cursor-pointer transition 
-                ${currentId === conv.id ? "bg-neutral-700" : "bg-neutral-800"}
-                hover:bg-neutral-700
-              `}
-            >
-              <div className="font-semibold">{conv.title || "Không tên"}</div>
-              <div className="opacity-60 text-sm line-clamp-1">
-                {conv.messages[0]?.text || "Chưa có tin nhắn"}
-              </div>
-            </div>
-          ))}
-        </div>
+      <Navbar />
 
-        {currentId && (
+      <main className="flex-1 container mx-auto px-4 py-8 z-10 flex gap-6 h-[calc(100vh-8rem)]">
+        {/* SIDEBAR */}
+        <aside className="w-64 bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col gap-4 backdrop-blur-sm hidden md:flex">
           <Button
-            variant="destructive"
-            onClick={() => deleteConversation(currentId)}
+            onClick={createConversation}
+            className="w-full bg-primary hover:bg-primary/90"
           >
-            Xóa cuộc trò chuyện
+            + New Chat
           </Button>
-        )}
-      </aside>
 
-      {/* MAIN CHAT AREA */}
-      <main className="flex-1 flex flex-col items-center p-6">
-        <h1 className="text-3xl font-bold mb-4">💬 Chat AI</h1>
-
-        <div className="w-full max-w-3xl bg-neutral-900 border border-neutral-800 rounded-xl p-5 h-[550px] overflow-y-auto shadow-xl">
-          {currentChat?.messages.map((m, i) => (
-            <div
-              key={i}
-              className={`flex mb-4 ${
-                m.role === "user" ? "justify-end" : "justify-start"
-              }`}
-            >
-              <div className="flex items-start gap-3 max-w-[80%]">
-                {m.role === "bot" && (
-                  <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shadow-lg">
-                    🤖
-                  </div>
-                )}
-
-                {m.role === "user" && (
-                  <div className="w-10 h-10 rounded-full bg-neutral-700 flex items-center justify-center shadow-lg">
-                    🧑
-                  </div>
-                )}
-
-                <div
-                  className={`
-                    p-3 rounded-2xl shadow-xl text-sm whitespace-pre-wrap leading-relaxed
-                    ${
-                      m.role === "user"
-                        ? "bg-blue-600 text-white rounded-tr-none"
-                        : "bg-neutral-800 text-blue-100 rounded-tl-none"
-                    }
-                  `}
-                >
-                  {m.text}
+          <div className="flex flex-col gap-2 overflow-y-auto flex-1 pr-2">
+            {conversations.map((conv) => (
+              <div
+                key={conv.id}
+                onClick={() => setCurrentId(conv.id)}
+                className={`
+                  p-3 rounded-lg cursor-pointer transition-all border
+                  ${
+                    currentId === conv.id
+                      ? "bg-primary/20 border-primary/50 text-white"
+                      : "bg-transparent border-transparent hover:bg-white/5 text-muted-foreground hover:text-white"
+                  }
+                `}
+              >
+                <div className="font-semibold truncate">
+                  {conv.title || "New Conversation"}
+                </div>
+                <div className="opacity-60 text-xs truncate mt-1">
+                  {conv.messages[conv.messages.length - 1]?.text ||
+                    "No messages"}
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
-          {loading && (
-            <div className="text-gray-500 italic animate-pulse pl-2">
-              Bot đang trả lời…
-            </div>
+          {currentId && (
+            <Button
+              variant="destructive"
+              onClick={() => deleteConversation(currentId)}
+              className="w-full opacity-80 hover:opacity-100"
+            >
+              Delete Chat
+            </Button>
           )}
+        </aside>
 
-          <div ref={chatEndRef} />
-        </div>
+        {/* MAIN CHAT AREA */}
+        <section className="flex-1 flex flex-col bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-sm shadow-2xl">
+          <div className="p-4 border-b border-white/10 flex items-center justify-between bg-black/20">
+            <h1 className="text-xl font-bold flex items-center gap-2 text-white">
+              <span>💬</span> AI Assistant
+            </h1>
+            <div className="md:hidden">
+              {/* Mobile menu trigger could go here */}
+            </div>
+          </div>
 
-        {/* INPUT */}
-        <div className="w-full max-w-3xl mt-4 flex items-center gap-3">
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            rows={2}
-            placeholder="Nhập tin nhắn…"
-            className="flex-1 p-3 rounded-lg bg-neutral-900 border border-neutral-700 text-white resize-none focus:border-blue-500 outline-none"
-          />
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+            {currentChat?.messages.length === 0 && (
+              <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-50">
+                <div className="text-6xl mb-4">👋</div>
+                <p>Start a conversation...</p>
+              </div>
+            )}
+            {currentChat?.messages.map((m, i) => (
+              <div
+                key={i}
+                className={`flex ${
+                  m.role === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div className="flex items-start gap-3 max-w-[85%]">
+                  {m.role === "bot" && (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg text-xs shrink-0">
+                      AI
+                    </div>
+                  )}
 
-          <Button
-            onClick={sendMessage}
-            className="px-6 py-4 bg-blue-600 hover:bg-blue-700 rounded-lg"
-          >
-            ➤
-          </Button>
-        </div>
+                  <div
+                    className={`
+                      p-3 rounded-2xl shadow-lg text-sm whitespace-pre-wrap leading-relaxed
+                      ${
+                        m.role === "user"
+                          ? "bg-primary text-primary-foreground rounded-tr-none"
+                          : "bg-white/10 text-gray-100 rounded-tl-none border border-white/5"
+                      }
+                    `}
+                  >
+                    {m.text}
+                  </div>
+
+                  {m.role === "user" && (
+                    <div className="w-8 h-8 rounded-full bg-neutral-700 flex items-center justify-center shadow-lg text-xs shrink-0">
+                      You
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {loading && (
+              <div className="flex justify-start">
+                <div className="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full text-xs text-muted-foreground animate-pulse">
+                  <span>AI is typing...</span>
+                </div>
+              </div>
+            )}
+
+            <div ref={chatEndRef} />
+          </div>
+
+          {/* INPUT */}
+          <div className="p-4 bg-black/20 border-t border-white/10">
+            <div className="flex items-end gap-2 bg-neutral-900/50 border border-white/10 rounded-xl p-2 focus-within:border-primary/50 transition-colors">
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={handleKeyDown}
+                rows={1}
+                placeholder="Type your message..."
+                className="flex-1 bg-transparent border-none text-white resize-none focus:ring-0 max-h-32 py-3 px-2 scrollbar-hide"
+                style={{ minHeight: "44px" }}
+              />
+
+              <Button
+                onClick={sendMessage}
+                size="icon"
+                className="h-10 w-10 rounded-lg bg-primary hover:bg-primary/90 shrink-0 mb-0.5"
+                disabled={!message.trim() || loading}
+              >
+                ➤
+              </Button>
+            </div>
+            <div className="text-center mt-2">
+              <p className="text-[10px] text-muted-foreground">
+                AI can make mistakes. Consider checking important information.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
+
+      <Footer />
     </div>
   );
 }
