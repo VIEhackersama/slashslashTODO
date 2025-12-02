@@ -41,7 +41,7 @@ export function Navbar() {
               Todos
             </Link>
             <Link
-              href="/about" 
+              href="/about"
               className="nav-item hover:text-primary transition-colors text-gray-600 dark:text-gray-300 dark:hover:text-white"
             >
               About Us
@@ -54,7 +54,13 @@ export function Navbar() {
             >
               Contact
             </Link>
-            
+
+            <Link
+              href="/chat"
+              className="nav-item hover:text-primary transition-colors text-gray-600 dark:text-gray-300 dark:hover:text-white"
+            >
+              Chat
+            </Link>
           </div>
         </div>
 
