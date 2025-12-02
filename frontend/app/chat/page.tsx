@@ -2,7 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Navbar } from "@/components/common/NavBar";
 import { v4 as uuidv4 } from "uuid";
+
 interface Message {
   role: "user" | "bot";
   text: string;
@@ -21,10 +23,9 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(false);
 
   const chatEndRef = useRef<HTMLDivElement | null>(null);
-
   const currentChat = conversations.find((c) => c.id === currentId);
 
-  // Load lịch sử từ localStorage
+  // Load conversations
   useEffect(() => {
     const saved = localStorage.getItem("conversations");
     if (saved) {
@@ -34,12 +35,11 @@ export default function ChatPage() {
     }
   }, []);
 
-  // Lưu vào localStorage
+  // Save conversations
   useEffect(() => {
     localStorage.setItem("conversations", JSON.stringify(conversations));
   }, [conversations]);
 
-  // Scroll cuối
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -48,21 +48,22 @@ export default function ChatPage() {
     scrollToBottom();
   }, [currentChat?.messages, loading]);
 
-  // Tạo cuộc trò chuyện mới
+  // Create new conversation
   const createConversation = () => {
     const newConv: Conversation = {
       id: uuidv4(),
-      title: "Cuộc trò chuyện mới",
+      title: "New Chat",
       messages: [],
     };
     setConversations((prev) => [newConv, ...prev]);
     setCurrentId(newConv.id);
   };
 
-  // Xóa cuộc hội thoại
+  // Delete conversation
   const deleteConversation = (id: string) => {
     const filtered = conversations.filter((c) => c.id !== id);
     setConversations(filtered);
+
     if (filtered.length > 0) setCurrentId(filtered[0].id);
     else {
       setCurrentId(null);
@@ -70,11 +71,10 @@ export default function ChatPage() {
     }
   };
 
-  // Gửi tin nhắn
+  // Send message
   const sendMessage = async () => {
     if (!message.trim() || !currentId) return;
 
-    // Thêm user message
     setConversations((prev) =>
       prev.map((c) =>
         c.id === currentId
@@ -101,11 +101,10 @@ export default function ChatPage() {
       const data = await res.json();
       const botReply = data.reply;
 
-      // Hiệu ứng streaming text
       let displayed = "";
       let i = 0;
 
-      // Tạo bot message rỗng trước
+      // Initial empty bot message
       setConversations((prev) =>
         prev.map((c) =>
           c.id === currentId
@@ -155,7 +154,7 @@ export default function ChatPage() {
     setLoading(false);
   };
 
-  // Enter để gửi
+  // Send on Enter
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -164,114 +163,117 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-neutral-950 text-white">
-      {/* SIDEBAR */}
-      <aside className="w-64 bg-neutral-900 border-r border-neutral-800 p-4 flex flex-col gap-4">
-        <Button
-          onClick={createConversation}
-          className="w-full bg-blue-600 hover:bg-blue-700"
-        >
-          + Cuộc trò chuyện mới
-        </Button>
+    <div className="min-h-screen bg-background text-foreground">
+      <Navbar />
 
-        <div className="flex flex-col gap-2 overflow-y-auto h-[80vh]">
-          {conversations.map((conv) => (
-            <div
-              key={conv.id}
-              onClick={() => setCurrentId(conv.id)}
-              className={`
-                p-3 rounded-lg cursor-pointer transition 
-                ${currentId === conv.id ? "bg-neutral-700" : "bg-neutral-800"}
-                hover:bg-neutral-700
-              `}
-            >
-              <div className="font-semibold">{conv.title || "Không tên"}</div>
-              <div className="opacity-60 text-sm line-clamp-1">
-                {conv.messages[0]?.text || "Chưa có tin nhắn"}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {currentId && (
+      <div className="flex h-[calc(100vh-4rem)]">
+        {/* Sidebar */}
+        <aside className="w-64 border-r border-border p-4 bg-card flex flex-col gap-4">
           <Button
-            variant="destructive"
-            onClick={() => deleteConversation(currentId)}
+            onClick={createConversation}
+            className="w-full bg-primary text-primary-foreground"
           >
-            Xóa cuộc trò chuyện
+            + New Chat
           </Button>
-        )}
-      </aside>
 
-      {/* MAIN CHAT AREA */}
-      <main className="flex-1 flex flex-col items-center p-6">
-        <h1 className="text-3xl font-bold mb-4">💬 Chat AI</h1>
-
-        <div className="w-full max-w-3xl bg-neutral-900 border border-neutral-800 rounded-xl p-5 h-[550px] overflow-y-auto shadow-xl">
-          {currentChat?.messages.map((m, i) => (
-            <div
-              key={i}
-              className={`flex mb-4 ${
-                m.role === "user" ? "justify-end" : "justify-start"
-              }`}
-            >
-              <div className="flex items-start gap-3 max-w-[80%]">
-                {m.role === "bot" && (
-                  <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shadow-lg">
-                    🤖
-                  </div>
-                )}
-
-                {m.role === "user" && (
-                  <div className="w-10 h-10 rounded-full bg-neutral-700 flex items-center justify-center shadow-lg">
-                    🧑
-                  </div>
-                )}
-
-                <div
-                  className={`
-                    p-3 rounded-2xl shadow-xl text-sm whitespace-pre-wrap leading-relaxed
-                    ${
-                      m.role === "user"
-                        ? "bg-blue-600 text-white rounded-tr-none"
-                        : "bg-neutral-800 text-blue-100 rounded-tl-none"
-                    }
-                  `}
-                >
-                  {m.text}
+          <div className="flex flex-col gap-2 overflow-y-auto h-[75vh]">
+            {conversations.map((conv) => (
+              <div
+                key={conv.id}
+                onClick={() => setCurrentId(conv.id)}
+                className={`p-3 rounded-lg cursor-pointer transition 
+                ${
+                  currentId === conv.id
+                    ? "bg-accent text-accent-foreground"
+                    : "bg-muted text-muted-foreground"
+                }
+                hover:bg-accent`}
+              >
+                <div className="font-semibold">{conv.title}</div>
+                <div className="opacity-70 text-sm line-clamp-1">
+                  {conv.messages[0]?.text || "No messages yet"}
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
-          {loading && (
-            <div className="text-gray-500 italic animate-pulse pl-2">
-              Bot đang trả lời…
-            </div>
+          {currentId && (
+            <Button variant="destructive" onClick={() => deleteConversation(currentId)}>
+              Delete Chat
+            </Button>
           )}
+        </aside>
 
-          <div ref={chatEndRef} />
-        </div>
+        {/* Main chat area */}
+        <main className="flex-1 flex flex-col items-center p-6">
+          <h1 className="text-3xl font-bold mb-4">💬 AI Chatbot</h1>
 
-        {/* INPUT */}
-        <div className="w-full max-w-3xl mt-4 flex items-center gap-3">
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            rows={2}
-            placeholder="Nhập tin nhắn…"
-            className="flex-1 p-3 rounded-lg bg-neutral-900 border border-neutral-700 text-white resize-none focus:border-blue-500 outline-none"
-          />
+          <div className="w-full max-w-3xl bg-card border border-border rounded-xl p-5 h-[550px] overflow-y-auto shadow">
+            {currentChat?.messages.map((m, i) => (
+              <div
+                key={i}
+                className={`flex mb-4 ${
+                  m.role === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div className="flex items-start gap-3 max-w-[80%]">
+                  {m.role === "bot" && (
+                    <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+                      🤖
+                    </div>
+                  )}
 
-          <Button
-            onClick={sendMessage}
-            className="px-6 py-4 bg-blue-600 hover:bg-blue-700 rounded-lg"
-          >
-            ➤
-          </Button>
-        </div>
-      </main>
+                  {m.role === "user" && (
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                      🧑
+                    </div>
+                  )}
+
+                  <div
+                    className={`
+                      p-3 rounded-2xl shadow text-sm whitespace-pre-wrap leading-relaxed
+                      ${
+                        m.role === "user"
+                          ? "bg-primary text-primary-foreground rounded-tr-none"
+                          : "bg-muted text-foreground rounded-tl-none"
+                      }
+                    `}
+                  >
+                    {m.text}
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {loading && (
+              <div className="text-muted-foreground italic animate-pulse pl-2">
+                Bot is typing…
+              </div>
+            )}
+
+            <div ref={chatEndRef} />
+          </div>
+
+          {/* Input */}
+          <div className="w-full max-w-3xl mt-4 flex items-center gap-3">
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
+              rows={2}
+              placeholder="Type your message…"
+              className="flex-1 p-3 rounded-lg bg-card border border-border resize-none focus:border-primary outline-none"
+            />
+
+            <Button
+              onClick={sendMessage}
+              className="px-6 py-4 bg-primary text-primary-foreground"
+            >
+              ➤
+            </Button>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
